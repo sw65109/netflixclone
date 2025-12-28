@@ -1,26 +1,90 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@layer base {
+  body {
+    @apply bg-[#141414] text-white;
+  }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #dc2626 transparent; 
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: #dc2626; 
+    border-radius: 9999px;
+  }
+
+  header {
+    @apply fixed top-0 z-50 flex w-full items-center justify-between
+    bg-linear-to-b from-black/80 via-black/40 to-transparent
+    px-4 py-4 transition-all lg:px-10 lg:py-6;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .headerLink {
+    @apply cursor-pointer text-sm font-light text-[#e5e5e5] transition duration-[.4s] hover:text-[#b3b3b3];
+  }
+
+  .bannerButton {
+    @apply flex items-center gap-x-2 rounded px-5 py-1.5 text-sm font-semibold transition hover:opacity-75 md:py-2.5 md:px-8 md:text-xl;
+  }
+
+  .bannerButton--play {
+    @apply shadow-lg ring-1 ring-black/20;
+  }
+
+  .input {
+    @apply w-full rounded bg-[#333] px-5 py-3.5 placeholder-[gray] outline-none focus:bg-[#454545];
+  }
+
+  .modalButton {
+    @apply flex h-11 w-11 items-center justify-center rounded-full border-2 border-[gray] bg-[#2a2a2a]/60 transition hover:border-white hover:bg-white/10;
+  }
+
+  .planBox {
+    @apply relative mx-1.5 flex h-20 w-[calc(100%/3)] cursor-default items-center justify-center rounded-sm bg-[#e50914] font-semibold shadow after:absolute after:top-full after:left-1/2 after:block after:-translate-x-1/2 after:border-8 after:border-b-0 after:border-transparent after:border-t-[#e50914] after:content-[""] md:h-32 lg:mx-8;
+  }
+
+  .tableRow {
+    @apply flex flex-wrap items-center font-medium;
+  }
+
+  .tableDataTitle {
+    @apply w-full p-2.5 text-center text-sm font-normal text-white md:w-2/5 md:p-3.5 md:text-left md:text-base;
+  }
+
+  .tableDataFeature {
+    @apply w-[calc(100%/3)] p-2.5 text-center md:w-[calc(60%/3)] md:p-3.5;
+  }
+
+  .membershipLink {
+    @apply cursor-pointer text-blue-500 hover:underline;
+  }
+
+  .menu {
+    @apply md:hidden;
+  }
+
+  .menu .MuiPaper-root {
+    @apply absolute! left-0! rounded-none! border! border-[gray]! bg-black! text-white!;
+  }
+
+  .menu .MuiList-root {
+    @apply p-0!;
+  }
+
+  .menu .MuiMenuItem-root {
+    @apply block! w-72! py-3.5! text-center! text-sm! font-light! text-[#b3b3b3]! transition! duration-200! first:cursor-default first:font-normal! first:text-white! hover:bg-[#181818]!;
+  }
 }
