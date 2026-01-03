@@ -1,89 +1,93 @@
-'use client'
+"use client";
 
-import Image from 'next/image'
-import Link from 'next/link'
-import { useMemo, useState } from 'react'
-import Footer from '../../components/Footer'
-import type { Movie } from '../../typings'
-import { baseUrl } from '../../constants/movie'
-import { useRouter } from 'next/navigation'
+import Image from "next/image";
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import Footer from "../../components/Footer";
+import type { Movie } from "../../typings";
+import { baseUrl } from "../../constants/movie";
+import { useRouter } from "next/navigation";
+import { NETFLIX_LOGO_URL } from "@/constants/ui";
 
 type LandingClientProps = {
-  trendingNow: Movie[]
-}
+  trendingNow: Movie[];
+};
 
 type FaqItem = {
-  q: string
-  a: string
-}
+  q: string;
+  a: string;
+};
 
 const FAQS: readonly FaqItem[] = [
   {
-    q: 'What is Netflix?',
-    a: 'Netflix is a streaming service that offers a wide variety of award-winning TV shows, movies, anime, documentaries, and more on thousands of internet-connected devices.',
+    q: "What is Netflix?",
+    a: "Netflix is a streaming service that offers a wide variety of award-winning TV shows, movies, anime, documentaries, and more on thousands of internet-connected devices.",
   },
   {
-    q: 'How much does Netflix cost?',
-    a: 'Watch Netflix on your smartphone, tablet, Smart TV, laptop, or streaming device, all for one fixed monthly fee.',
+    q: "How much does Netflix cost?",
+    a: "Watch Netflix on your smartphone, tablet, Smart TV, laptop, or streaming device, all for one fixed monthly fee.",
   },
   {
-    q: 'Where can I watch?',
-    a: 'Watch anywhere, anytime. Sign in with your Netflix account to watch instantly on the web or on devices that offer the Netflix app.',
+    q: "Where can I watch?",
+    a: "Watch anywhere, anytime. Sign in with your Netflix account to watch instantly on the web or on devices that offer the Netflix app.",
   },
   {
-    q: 'How do I cancel?',
+    q: "How do I cancel?",
     a: "Cancel anytime. There are no commitments—just stop your membership when you're ready.",
   },
   {
-    q: 'What can I watch on Netflix?',
-    a: 'Explore a huge library of feature films, documentaries, TV shows, and more.',
+    q: "What can I watch on Netflix?",
+    a: "Explore a huge library of feature films, documentaries, TV shows, and more.",
   },
   {
-    q: 'Is Netflix good for kids?',
-    a: 'The Netflix Kids experience is included to give parents control while kids enjoy family-friendly content.',
+    q: "Is Netflix good for kids?",
+    a: "The Netflix Kids experience is included to give parents control while kids enjoy family-friendly content.",
   },
-] as const
+] as const;
 
 function pickRandom<T>(items: readonly T[]): T | null {
-  if (!items || items.length === 0) return null
-  const idx = Math.floor(Math.random() * items.length)
-  return items[idx] ?? null
+  if (!items || items.length === 0) return null;
+  const idx = Math.floor(Math.random() * items.length);
+  return items[idx] ?? null;
 }
 
 function titleText(m: Movie) {
-  return m.title || m.name || m.original_name || 'Featured'
+  return m.title || m.name || m.original_name || "Featured";
 }
 
 export default function LandingClient({ trendingNow }: LandingClientProps) {
-  const [open, setOpen] = useState<number | null>(null)
-  const [email, setEmail] = useState('')
-  const router = useRouter()
+  const [open, setOpen] = useState<number | null>(null);
+  const [email, setEmail] = useState("");
+  const router = useRouter();
 
   const goToPlans = () => {
-    const e = email.trim()
-    const qs = e ? `?email=${encodeURIComponent(e)}` : ''
-    router.push(`/login/plans${qs}`)
-  }
+    const e = email.trim();
+    const qs = e ? `?email=${encodeURIComponent(e)}` : "";
+    router.push(`/login/plans${qs}`);
+  };
 
   const hero = useMemo(() => {
-    const withImages = trendingNow.filter((t) => !!(t.backdrop_path || t.poster_path))
-    return (pickRandom(withImages.length ? withImages : trendingNow) ?? null) as Movie | null
-  }, [trendingNow])
+    const withImages = trendingNow.filter(
+      (t) => !!(t.backdrop_path || t.poster_path)
+    );
+    return (pickRandom(withImages.length ? withImages : trendingNow) ??
+      null) as Movie | null;
+  }, [trendingNow]);
 
-  const heroImagePath = hero?.backdrop_path || hero?.poster_path || null
+  const heroImagePath = hero?.backdrop_path || hero?.poster_path || null;
 
   const topRow = useMemo(() => {
-    const withPoster = trendingNow.filter((t) => !!t.poster_path)
-    return withPoster.slice(0, 10)
-  }, [trendingNow])
+    const withPoster = trendingNow.filter((t) => !!t.poster_path);
+    return withPoster.slice(0, 10);
+  }, [trendingNow]);
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <section className="relative min-h-[75vh] w-full">
+      <section className="relative h-screen w-full">
         {heroImagePath ? (
           <Image
             src={`${baseUrl}${heroImagePath}`}
-            alt={hero ? titleText(hero) : 'Netflix'}
+            alt={hero ? titleText(hero) : "Netflix"}
             fill
             priority
             className="object-cover"
@@ -94,11 +98,15 @@ export default function LandingClient({ trendingNow }: LandingClientProps) {
 
         <div className="absolute inset-0 bg-linear-to-b from-black/80 via-black/40 to-black/90" />
 
-        <div className="relative z-10 mx-auto flex w-full max-w-6xl items-center justify-between px-6 pt-6 md:px-10">
+        <div className="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-between px-6 pt-6 md:px-10">
           <Link href="/" aria-label="Netflix Home" className="select-none">
-            <div className="text-3xl font-black tracking-wide text-[#e50914]">
-              NETFLIX
-            </div>
+            <Image
+              src={NETFLIX_LOGO_URL}
+              alt="Netflix"
+              width={120}
+              height={32}
+              priority
+            />
           </Link>
 
           <div className="flex items-center gap-3">
@@ -129,10 +137,13 @@ export default function LandingClient({ trendingNow }: LandingClientProps) {
             more
           </h1>
 
-          <p className="mt-4 text-lg text-white/90">Starts at $9.99. Cancel anytime.</p>
+          <p className="mt-4 text-lg text-white/90">
+            Starts at $9.99. Cancel anytime.
+          </p>
 
           <p className="mt-6 text-sm text-white/90">
-            Ready to watch? Enter your email to create or restart your membership.
+            Ready to watch? Enter your email to create or restart your
+            membership.
           </p>
 
           <div className="mt-4 flex w-full max-w-xl flex-col gap-3 sm:flex-row">
@@ -159,7 +170,9 @@ export default function LandingClient({ trendingNow }: LandingClientProps) {
           <div className="flex items-center gap-4">
             <div className="text-3xl">🍿</div>
             <div>
-              <div className="text-lg font-semibold">The Netflix you love for just $9.99.</div>
+              <div className="text-lg font-semibold">
+                The Netflix you love for just $9.99.
+              </div>
               <div className="text-sm text-gray-200">
                 Get our most affordable, ad-supported plan.
               </div>
@@ -168,7 +181,7 @@ export default function LandingClient({ trendingNow }: LandingClientProps) {
           <button
             type="button"
             className="rounded bg-white/10 px-4 py-2 text-sm font-semibold hover:bg-white/15"
-            onClick={() => router.push('/login/learn-more')}
+            onClick={() => router.push("/login/learn-more")}
           >
             Learn More
           </button>
@@ -210,12 +223,15 @@ export default function LandingClient({ trendingNow }: LandingClientProps) {
           <div className="rounded-2xl bg-[#1b1b1b]/80 p-6 text-left shadow-sm ring-1 ring-white/5">
             <div className="mb-4 text-xl font-semibold">Enjoy on your TV</div>
             <p className="text-sm text-gray-300">
-              Watch on Smart TVs, Playstation, Xbox, Chromecast, Apple TV, Blu-ray players, and more.
+              Watch on Smart TVs, Playstation, Xbox, Chromecast, Apple TV,
+              Blu-ray players, and more.
             </p>
           </div>
 
           <div className="rounded-2xl bg-[#1b1b1b]/80 p-6 text-left shadow-sm ring-1 ring-white/5">
-            <div className="mb-4 text-xl font-semibold">Download your shows to watch offline</div>
+            <div className="mb-4 text-xl font-semibold">
+              Download your shows to watch offline
+            </div>
             <p className="text-sm text-gray-300">
               Save your favorites easily and always have something to watch.
             </p>
@@ -224,34 +240,43 @@ export default function LandingClient({ trendingNow }: LandingClientProps) {
           <div className="rounded-2xl bg-[#1b1b1b]/80 p-6 text-left shadow-sm ring-1 ring-white/5">
             <div className="mb-4 text-xl font-semibold">Watch everywhere</div>
             <p className="text-sm text-gray-300">
-              Stream unlimited movies and TV shows on your phone, tablet, laptop, and TV.
+              Stream unlimited movies and TV shows on your phone, tablet,
+              laptop, and TV.
             </p>
           </div>
 
           <div className="rounded-2xl bg-[#1b1b1b]/80 p-6 text-left shadow-sm ring-1 ring-white/5">
-            <div className="mb-4 text-xl font-semibold">Create profiles for kids</div>
+            <div className="mb-4 text-xl font-semibold">
+              Create profiles for kids
+            </div>
             <p className="text-sm text-gray-300">
-              Send kids on adventures with their favorite characters in a space made just for them—free with your membership.
+              Send kids on adventures with their favorite characters in a space
+              made just for them—free with your membership.
             </p>
           </div>
         </div>
       </section>
 
       <section className="mx-auto mt-16 w-full max-w-6xl px-6 md:px-10">
-        <h2 className="mb-6 text-2xl font-semibold">Frequently Asked Questions</h2>
+        <h2 className="mb-6 text-2xl font-semibold">
+          Frequently Asked Questions
+        </h2>
 
         <div className="space-y-2">
           {FAQS.map((item, idx) => {
-            const isOpen = open === idx
+            const isOpen = open === idx;
             return (
-              <div key={item.q} className="overflow-hidden rounded bg-[#2a2a2a]">
+              <div
+                key={item.q}
+                className="overflow-hidden rounded bg-[#2a2a2a]"
+              >
                 <button
                   type="button"
                   onClick={() => setOpen((prev) => (prev === idx ? null : idx))}
                   className="flex w-full items-center justify-between px-6 py-5 text-left text-xl"
                 >
                   <span>{item.q}</span>
-                  <span className="text-2xl">{isOpen ? '×' : '+'}</span>
+                  <span className="text-2xl">{isOpen ? "×" : "+"}</span>
                 </button>
 
                 {isOpen && (
@@ -260,13 +285,14 @@ export default function LandingClient({ trendingNow }: LandingClientProps) {
                   </div>
                 )}
               </div>
-            )
+            );
           })}
         </div>
 
         <div className="mt-10 text-center">
           <p className="text-sm text-white/90">
-            Ready to watch? Enter your email to create or restart your membership.
+            Ready to watch? Enter your email to create or restart your
+            membership.
           </p>
 
           <div className="mx-auto mt-4 flex w-full max-w-xl flex-col gap-3 sm:flex-row">
@@ -290,5 +316,5 @@ export default function LandingClient({ trendingNow }: LandingClientProps) {
 
       <Footer />
     </div>
-  )
+  );
 }

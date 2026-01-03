@@ -3,6 +3,7 @@
 import type { Movie } from '../../typings'
 import Banner from '../../components/Banner'
 import Row from '../../components/Row'
+import MyList from '@/components/MyList'
 
 type HomeClientProps = {
   netflixOriginals: Movie[]
@@ -34,6 +35,7 @@ export default function HomeClient({
         <Row title="Top Rated" movies={topRated} />
         <Row title="Action Movies" movies={actionMovies} />
         <Row title="Comedy Movies" movies={comedyMovies} />
+        <MyList />
         <Row title="Horror Movies" movies={horrorMovies} />
         <Row title="Romance Movies" movies={romanceMovies} />
         <Row title="Documentaries" movies={documentaries} />

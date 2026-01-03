@@ -151,7 +151,6 @@ export default function Modal() {
 
     const params = new URLSearchParams({
       autoplay: isPlaying ? "1" : "0",
-      // Autoplay is much more reliable muted; user can unmute via controls.
       mute: isPlaying ? "1" : "0",
       controls: "1",
       rel: "0",
@@ -233,7 +232,6 @@ export default function Modal() {
         },
       }}
     >
-      {/* Center the modal */}
       <div className="flex min-h-svh items-center justify-center p-4 sm:p-6">
         <div className="relative mx-auto w-full max-w-5xl max-h-[90svh] overflow-y-auto overflow-x-hidden rounded-md bg-[#181818] outline-none">
           <Toaster position="bottom-center" />
@@ -245,7 +243,6 @@ export default function Modal() {
             <XMarkIcon className="h-6 w-6" />
           </button>
 
-          {/* Video */}
           <div className="relative bg-black pt-[56.25%]">
             {trailer ? (
               <>
@@ -295,7 +292,6 @@ export default function Modal() {
             )}
           </div>
 
-          {/* Details */}
           <div className="flex space-x-16 px-10 py-8">
             <div className="space-y-6 text-lg">
               <div className="flex items-center space-x-2 text-sm">
@@ -348,7 +344,6 @@ export default function Modal() {
               </div>
             </div>
           </div>
-          {/* end details */}
         </div>
       </div>
     </MuiModal>

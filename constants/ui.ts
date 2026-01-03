@@ -12,9 +12,10 @@ export type NavItem = {
 
 export const NAV_ITEMS: readonly NavItem[] = [
   { label: 'Home', href: ROUTES.home },
-  { label: 'Search', href: ROUTES.search },
-  { label: 'Kids', href: ROUTES.kids },
-  { label: 'Help', href: ROUTES.help },
+  { label: 'TV Shows', href: ROUTES.tvShows },
+  { label: 'Movies', href: ROUTES.movies },
+  { label: 'New & Popular', href: ROUTES.newAndPopular },
+  { label: 'My List', href: ROUTES.myList },
 ] as const
 
 export const ACCOUNT_MENU_ITEMS: readonly NavItem[] = [

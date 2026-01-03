@@ -33,7 +33,7 @@ export default function Banner({ titles, fallbackTitle = 'Featured' }: BannerPro
 
   return (
     <section className="relative w-full">
-        <div className="absolute inset-0 -z-10 h-[70vh]">
+        <div className="absolute inset-0 z-0 h-[70vh]">
           {imagePath ? (
             <Image
               src={`${baseUrl}${imagePath}`}
@@ -44,11 +44,10 @@ export default function Banner({ titles, fallbackTitle = 'Featured' }: BannerPro
             />
           ) : null}
 
-          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/40 via-black/20 to-transparent" />
         </div>
 
-        {/* Content */}
-        <div className="mx-auto flex min-h-[65svh] lg:min-h-[65vh] max-w-screen-2xl flex-col justify-end space-y-2 px-4 pb-10 md:space-y-4 lg:px-16 lg:pb-12">
+        <div className="relative z-10 mx-auto flex min-h-[65svh] lg:min-h-[65vh] max-w-screen-2xl flex-col justify-end space-y-2 px-4 pb-10 md:space-y-4 lg:px-16 lg:pb-12">
           <h1 className="text-2xl font-bold text-shadow-lg md:text-2xl lg:text-5xl">
             {titleText}
           </h1>

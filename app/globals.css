@@ -91,10 +91,10 @@
 
 @layer utilities {
   .scrollbar-hide {
-    -ms-overflow-style: none; /* IE/Edge legacy */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; 
+    scrollbar-width: none;
   }
   .scrollbar-hide::-webkit-scrollbar {
-    display: none; /* Chrome/Safari */
+    display: none;
   }
 }
