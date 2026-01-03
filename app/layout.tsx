@@ -1,19 +1,19 @@
-import type { Metadata } from 'next'
-import './globals.css'
-import Providers from './providers'
-import Header from '../components/Header'
-import HeaderGate from './_components/HeaderGate'
-import GlobalModal from './_components/GlobalModal'
+import type { Metadata } from "next";
+import "./globals.css";
+import Providers from "./providers";
+import Header from "../components/Header";
+import HeaderGate from "./_components/HeaderGate";
+import GlobalModal from "./_components/GlobalModal";
 
 export const metadata: Metadata = {
-  title: 'Netflix Clone',
-  description: 'Netflix clone (App Router)',
-}
+  title: "Netflix Clone",
+  description: "Netflix clone (App Router)",
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en">
@@ -28,5 +28,5 @@ export default function RootLayout({
         </Providers>
       </body>
     </html>
-  )
+  );
 }

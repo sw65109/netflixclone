@@ -15,8 +15,6 @@ import {
   onSnapshot,
   setDoc,
 } from "firebase/firestore";
-import dynamic from "next/dynamic";
-import type { ComponentType } from "react";
 import { useEffect, useMemo, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { getDb } from "../firebase";
@@ -31,13 +29,6 @@ type TmdbVideo = {
   name?: string;
 };
 
-const ReactPlayer = dynamic(
-  () => import("react-player").then((m) => m.default),
-  {
-    ssr: false,
-  }
-) as ComponentType<Record<string, unknown>>;
-
 export default function Modal() {
   const showModal = useUiStore((s) => s.showModal);
   const movie = useUiStore((s) => s.currentMovie);
@@ -47,10 +38,9 @@ export default function Modal() {
 
   const [trailer, setTrailer] = useState<string>("");
   const [genres, setGenres] = useState<Genre[]>([]);
-  const [muted, setMuted] = useState<boolean>(false);
   const [playerError, setPlayerError] = useState<string | null>(null);
-  const [iframeLoaded, setIframeLoaded] = useState<boolean>(false);
-  const [iframeErrored, setIframeErrored] = useState<boolean>(false);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+  const [iframeErrored, setIframeErrored] = useState(false);
 
   const movieKey = useMemo(() => {
     return movie?.id ? String(movie.id) : "none";
@@ -70,15 +60,12 @@ export default function Modal() {
   };
 
   useEffect(() => {
-    if (!movie) {
-      return;
-    }
+    if (!movie) return;
 
     async function fetchMovie() {
       setPlayerError(null);
       setIframeLoaded(false);
       setIframeErrored(false);
-      setMuted(false);
 
       const data = await fetch(
         `https://api.themoviedb.org/3/${
@@ -159,13 +146,13 @@ export default function Modal() {
 
   const isPlaying = autoplayTrailer && !!trailer;
 
-  const effectiveMuted = muted;
-
   const youtubeEmbedUrl = useMemo(() => {
     if (!trailer) return "";
+
     const params = new URLSearchParams({
       autoplay: isPlaying ? "1" : "0",
-      mute: effectiveMuted ? "1" : "0",
+      // Autoplay is much more reliable muted; user can unmute via controls.
+      mute: isPlaying ? "1" : "0",
       controls: "1",
       rel: "0",
       modestbranding: "1",
@@ -175,7 +162,7 @@ export default function Modal() {
     });
 
     return `https://www.youtube-nocookie.com/embed/${trailer}?${params.toString()}`;
-  }, [effectiveMuted, isPlaying, trailer]);
+  }, [isPlaying, trailer]);
 
   const handleList = async () => {
     if (!user) {
@@ -246,10 +233,9 @@ export default function Modal() {
         },
       }}
     >
-      <div className="flex min-h-screen items-start justify-center p-4 sm:p-6">
-        <div
-          className="relative mx-auto mt-10 w-full max-w-5xl overflow-hidden rounded-md bg-[#181818] outline-none"
-        >
+      {/* Center the modal */}
+      <div className="flex min-h-svh items-center justify-center p-4 sm:p-6">
+        <div className="relative mx-auto w-full max-w-5xl max-h-[90svh] overflow-y-auto overflow-x-hidden rounded-md bg-[#181818] outline-none">
           <Toaster position="bottom-center" />
 
           <button
@@ -259,41 +245,12 @@ export default function Modal() {
             <XMarkIcon className="h-6 w-6" />
           </button>
 
-          <div className="relative bg-black pt-[56.75%]">
+          {/* Video */}
+          <div className="relative bg-black pt-[56.25%]">
             {trailer ? (
               <>
-                <ReactPlayer
-                  key={trailer}
-                  url={`https://www.youtube.com/watch?v=${trailer}`}
-                  width="100%"
-                  height="auto"
-                  style={{ position: "absolute", inset: 0 }}
-                  playing={isPlaying}
-                  muted={effectiveMuted}
-                  controls
-                  onError={(e: unknown) => {
-                    if (process.env.NODE_ENV !== "production") {
-                      console.log("[Modal player error]", e);
-                    }
-                    setPlayerError(
-                      "Trailer embed may be blocked in this browser."
-                    );
-                    setMuted(false);
-                  }}
-                  config={{
-                    youtube: {
-                      playerVars: {
-                        autoplay: 1,
-                        playsinline: 1,
-                        rel: 0,
-                        modestbranding: 1,
-                      },
-                    },
-                  }}
-                />
-
                 <iframe
-                  key={`${trailer}-iframe`}
+                  key={trailer}
                   className="absolute inset-0 h-full w-full"
                   src={youtubeEmbedUrl}
                   title="Trailer"
@@ -302,16 +259,16 @@ export default function Modal() {
                   onLoad={() => setIframeLoaded(true)}
                   onError={() => {
                     setIframeErrored(true);
-                    setMuted(false);
+                    setPlayerError("Trailer embed may be blocked in this browser.");
                   }}
                 />
 
-                {playerError && !iframeLoaded ? (
+                {playerError && (!iframeLoaded || iframeErrored) ? (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/70 px-6 text-center">
                     <div className="space-y-3">
                       <p className="text-sm text-gray-200">
-                        Trailer didn&apos;t load. This is usually caused by an
-                        ad blocker, tracking protection, or blocked third-party
+                        Trailer didn&apos;t load. This is usually caused by an ad
+                        blocker, tracking protection, or blocked third-party
                         cookies.
                       </p>
                       <a
@@ -332,12 +289,13 @@ export default function Modal() {
                 ) : null}
               </>
             ) : (
-              <div className="flex h-full items-center justify-center text-gray-300">
+              <div className="absolute inset-0 flex items-center justify-center text-gray-300">
                 No trailer found.
               </div>
             )}
           </div>
 
+          {/* Details */}
           <div className="flex space-x-16 px-10 py-8">
             <div className="space-y-6 text-lg">
               <div className="flex items-center space-x-2 text-sm">
@@ -370,6 +328,7 @@ export default function Modal() {
                     </button>
                   </div>
                 </div>
+
                 <div className="flex flex-col space-y-3 text-sm">
                   <div>
                     <span className="text-[gray]">Genres: </span>
@@ -389,6 +348,7 @@ export default function Modal() {
               </div>
             </div>
           </div>
+          {/* end details */}
         </div>
       </div>
     </MuiModal>
