@@ -16,12 +16,16 @@ import {
 import { useOutsideClick } from "../hooks/useOutsideClick";
 import BasicMenu from "./BasicMenu";
 import Image from "next/image";
+import useProfile from "@/hooks/useProfile";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
   const { logout } = useAuth();
+
+  const { profiles } = useProfile();
+  const hasKidsProfile = profiles.some((p) => p.isKids);
 
   useOutsideClick(accountMenuRef, () => setIsAccountMenuOpen(false), {
     enabled: isAccountMenuOpen,
@@ -69,9 +73,11 @@ export default function Header() {
             <MagnifyingGlassIcon className="h-6 w-6 cursor-pointer" />
           </Link>
 
-          <Link href="/kids" className="hidden cursor-pointer lg:inline">
-            Kids
-          </Link>
+          {hasKidsProfile ? (
+            <Link href="/kids" className="hidden cursor-pointer lg:inline">
+              Kids
+            </Link>
+          ) : null}
 
           <BellIcon className="hidden h-6 w-6 cursor-pointer md:inline" />
 
@@ -122,7 +128,9 @@ export default function Header() {
                       <span>Profile</span>
                     </button>
 
-                    {ACCOUNT_MENU_ITEMS.map((item) => (
+                    {ACCOUNT_MENU_ITEMS.filter((item) =>
+                      item.href === "/kids" ? hasKidsProfile : true
+                    ).map((item) => (
                       <Link
                         key={item.href}
                         href={item.href}

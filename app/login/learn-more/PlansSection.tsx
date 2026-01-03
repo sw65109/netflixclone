@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Product } from '@stripe/firestore-stripe-payments'
 import { CheckIcon } from '@heroicons/react/24/outline'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Table from '../../../components/Table'
 import { getDb } from '../../../firebase'
 import {
@@ -49,6 +49,9 @@ function toProductShape(
 
 export default function PlansSection() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+const email = searchParams?.get('email')
+const next = searchParams?.get('next')
 
   const [products, setProducts] = useState<Product[]>([])
   const [productsLoading, setProductsLoading] = useState(true)
@@ -172,11 +175,11 @@ export default function PlansSection() {
           <div className="rounded bg-white/5 p-4 text-sm text-gray-300">Loading plans…</div>
         ) : productsError ? (
           <div className="rounded border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">
-            <div className="font-semibold">We couldn’t load plans.</div>
+            <div className="font-semibold">We couldn&apost load plans.</div>
             <div className="mt-2 wrap-break-word opacity-90">{productsError}</div>
             <div className="mt-3 text-xs text-red-100/80">
               Common causes: Firestore security rules deny read access to the <code>products</code> collection,
-              the Stripe extension hasn’t synced products/prices yet, or there are no <code>active</code> prices.
+              the Stripe extension hasn&apost synced products/prices yet, or there are no <code>active</code> prices.
             </div>
           </div>
         ) : !plansReady ? (
@@ -210,15 +213,18 @@ export default function PlansSection() {
               className="mx-auto w-11/12 rounded bg-[#E50914] py-4 text-xl shadow hover:bg-[#f6121d] md:w-105"
               onClick={() => {
                 if (!selectedPriceId) return
-                router.push(`/login/signup?priceId=${encodeURIComponent(selectedPriceId)}`)
+                const qs = new URLSearchParams()
+                qs.set('priceId', selectedPriceId)
+                if (email) qs.set('email', email)
+                if (next) qs.set('next', next)
+                router.push(`/login/signup?${qs.toString()}`)
               }}
-              disabled={!effectiveSelectedPlan || !selectedPriceId}
             >
               {ctaPriceText}
             </button>
 
             <p className="mx-auto w-11/12 text-xs text-white/60 md:w-105">
-              You’ll create your account, then you’ll be prompted to enter payment details.
+              You&aposll create your account, then you&aposll be prompted to enter payment details.
             </p>
           </>
         )}

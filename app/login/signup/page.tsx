@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import useAuth from '../../../hooks/useAuth'
 import useSubscription from '../../../hooks/useSubscription'
@@ -32,6 +32,15 @@ export default function SignUpPage() {
     if (password !== confirm) return true
     return false
   }, [confirm, email, loading, password])
+
+  useEffect(() => {
+    if (priceId) return
+    const qs = new URLSearchParams()
+    const e = email.trim()
+    if (e) qs.set('email', e)
+    if (next) qs.set('next', next)
+    router.replace(`/login/plans${qs.toString() ? `?${qs.toString()}` : ''}`)
+  }, [priceId, router, email, next])
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()

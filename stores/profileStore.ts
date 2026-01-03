@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 
 export type Profile = {
   id: string
@@ -30,55 +29,46 @@ const defaultProfiles: Profile[] = [
   },
 ]
 
-export const useProfileStore = create<ProfileState>()(
-  persist(
-    (set, get) => ({
-      profiles: defaultProfiles,
-      activeProfileId: 'default',
+export const useProfileStore = create<ProfileState>()((set, get) => ({
+  profiles: defaultProfiles,
+  activeProfileId: 'default',
 
-      setActiveProfileId: (id) => set({ activeProfileId: id }),
+  setActiveProfileId: (id) => set({ activeProfileId: id }),
 
-      addProfile: (input) => {
-        const id = input.id?.trim() ? input.id : makeId()
+  addProfile: (input) => {
+    const id = input.id?.trim() ? input.id : makeId()
 
-        set((state) => {
-          if (state.profiles.some((p) => p.id === id)) return state
-          return {
-            profiles: [
-              ...state.profiles,
-              {
-                id,
-                name: input.name,
-                avatarUrl: input.avatarUrl,
-                isKids: input.isKids,
-              },
-            ],
-          }
-        })
+    set((state) => {
+      if (state.profiles.some((p) => p.id === id)) return state
+      return {
+        profiles: [
+          ...state.profiles,
+          {
+            id,
+            name: input.name,
+            avatarUrl: input.avatarUrl,
+            isKids: input.isKids,
+          },
+        ],
+      }
+    })
 
-        return id
-      },
+    return id
+  },
 
-      updateProfile: (id, patch) => {
-        set((state) => ({
-          profiles: state.profiles.map((p) => (p.id === id ? { ...p, ...patch } : p)),
-        }))
-      },
+  updateProfile: (id, patch) => {
+    set((state) => ({
+      profiles: state.profiles.map((p) =>
+        p.id === id ? { ...p, ...patch } : p
+      ),
+    }))
+  },
 
-      deleteProfile: (id) => {
-        const current = get().activeProfileId
-        set((state) => ({
-          profiles: state.profiles.filter((p) => p.id !== id),
-          activeProfileId: current === id ? 'default' : current,
-        }))
-      },
-    }),
-    {
-      name: 'netflixclone_profiles_v1',
-      partialize: (state) => ({
-        profiles: state.profiles,
-        activeProfileId: state.activeProfileId,
-      }),
-    }
-  )
-)
+  deleteProfile: (id) => {
+    const current = get().activeProfileId
+    set((state) => ({
+      profiles: state.profiles.filter((p) => p.id !== id),
+      activeProfileId: current === id ? 'default' : current,
+    }))
+  },
+}))
