@@ -156,6 +156,22 @@ To persist them, add either:
 - `zustand` `persist` middleware (localStorage), or
 - a Firestore-backed profiles collection per user.
 
+## 🙏 Attribution & Disclaimer
+
+- This project is an educational demo and is **not affiliated with, endorsed, or sponsored by Netflix, Inc.**
+- “Netflix” is a trademark of Netflix, Inc. Other trademarks, logos, and brand names are the property of their respective owners.
+- **TMDB**: This product uses the TMDB API but is not endorsed or certified by TMDB. TMDB: https://www.themoviedb.org/
+- Movie/TV metadata and images are provided via TMDB and are © their respective owners.
+- **Stripe/Firebase**: Subscriptions and payments follow the Stripe Firebase Extension pattern (Firestore Stripe Payments). Authentication and app data use Firebase.
+- **Ali Code**: Parts of this project were built by following Ali Code’s 3-part Netflix clone series and then updated to modern versions (Next.js/React) and project choices (e.g., Zustand instead of Recoil):
+  - Build and Deploy a Fullstack Netflix Clone: Tailwind Introduction & Server Side Rendering (Part 1)
+  - Build and Deploy a Fullstack Netflix Clone: Implementing Auth and using Recoil (Part 2)
+  - Build and Deploy a Fullstack Netflix Clone: Integrating Stripe & building Plans Screen (Part 3)
+
 ## 📄 License
 
 This project is for educational purposes.
+
+
+
+
